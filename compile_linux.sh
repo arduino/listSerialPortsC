@@ -1,1 +1,2 @@
-mkdir -p distrib/linux && cd libserialport && ./configure && make clean && make && cd .. && gcc main.c -Ilibserialport/ -Llibserialport/.libs/ -lserialport -static -o listSerialC && cp listSerialC distrib/linux/listSerialC_64
+mkdir -p distrib/linux && cd libserialport && ./configure && make clean && make && cd .. && gcc main.c libserialport/linux_termios.c libserialport/linux.c libserialport/serialport.c -Ilibserialport/  -o listSerialC && cp listSerialC distrib/linux/listSerialC_64
+mkdir -p distrib/linux && cd libserialport && CFLAGS=-m32 ./configure && make clean && make && cd .. && gcc -m32 main.c libserialport/linux_termios.c libserialport/linux.c libserialport/serialport.c -Ilibserialport/  -o listSerialC && cp listSerialC distrib/linux/listSerialC_32
