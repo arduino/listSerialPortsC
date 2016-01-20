@@ -2,7 +2,7 @@
 
 mkdir -p distrib/linux64
 cd libserialport
-autoconf
+./autogen.sh
 ./configure
 make clean
 make
