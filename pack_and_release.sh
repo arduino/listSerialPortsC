@@ -1,3 +1,5 @@
+#!/bin/bash -xe
+
 VERSION=$1
 
 if [ x$VERSION = "x" ]
