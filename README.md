@@ -6,11 +6,8 @@ Prerequisites:
 
 TLTR:
 ```bash
-apt-get install build-essential gcc-multilib g++-multilib mingw-w64 xz-utils libxml2-dev clang patch git
+apt-get install build-essential gcc-multilib g++-multilib mingw-w64 xz-utils libxml2-dev clang patch git gcc-4.8-arm-linux-gnueabihf g++-4.8-arm-linux-gnueabihf
 #setup osxcross + add binaries to PATH
-#wget https://releases.linaro.org/15.06/components/toolchain/gcc-linaro/4.9/gcc-linaro-4.9-2015.06.tar.xz
-#tar xvf gcc-linaro-4.9-2015.06.tar.xz
-#add ARM binaries to PATH
 git clone https://github.com/facchinm/listSerialPortsC --recursive
 ./pack_and_release.sh
 
