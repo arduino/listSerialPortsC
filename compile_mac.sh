@@ -4,7 +4,7 @@ JAVA_INCLUDE_PATH=/opt/jvm/jdk1.8.0/include/
 
 mkdir -p distrib/osx
 cd libserialport
-autoconf
+./autogen.sh
 CC=o64-clang ./configure --host=x86_64-apple-darwin13
 make clean
 make

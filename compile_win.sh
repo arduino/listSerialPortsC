@@ -4,7 +4,7 @@ JAVA_INCLUDE_PATH=/opt/jvm/jdk1.8.0/include/
 
 mkdir -p distrib/windows
 cd libserialport
-autoconf
+./autogen.sh
 ./configure --host=i686-w64-mingw32
 make clean
 make

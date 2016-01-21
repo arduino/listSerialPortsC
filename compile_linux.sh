@@ -4,7 +4,7 @@ JAVA_INCLUDE_PATH=/opt/jvm/jdk1.8.0/include/
 
 mkdir -p distrib/linux64
 cd libserialport
-autoconf
+./autogen.sh
 ./configure
 make clean
 make
@@ -16,7 +16,7 @@ cp liblistSerialsj.so distrib/linux64/
 
 mkdir -p distrib/linux32
 cd libserialport
-autoconf
+./autogen.sh
 CFLAGS=-m32 ./configure
 make clean
 make
@@ -28,7 +28,8 @@ cp liblistSerialsj.so distrib/linux32
 
 mkdir -p distrib/arm
 cd libserialport
-autoconf
+./autogen.sh
+./configure --host=arm-linux-gnueabihf
 make clean
 make
 cd ..
