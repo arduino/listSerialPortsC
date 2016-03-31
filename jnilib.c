@@ -25,6 +25,8 @@ JNIEXPORT jstring JNICALL Java_processing_app_Platform_resolveDeviceAttachedToNa
 	return (*env)->NewStringUTF(env, vid_pid_iserial);
 }
 
+#ifndef _WIN32
+
 JNIEXPORT jobjectArray JNICALL Java_processing_app_Platform_listSerialsNative
   (JNIEnv * env, jobject jobj)
 {
@@ -56,3 +58,81 @@ JNIEXPORT jobjectArray JNICALL Java_processing_app_Platform_listSerialsNative
 
 	return ret;
 }
+
+#else
+
+// use listcomports code
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdarg.h>
+#include <string.h>
+#include <unistd.h>
+
+
+#include <windows.h>
+#include <setupapi.h>
+
+#include <disphelper.h>
+
+JNIEXPORT jobjectArray JNICALL Java_processing_app_Platform_listSerialsNative
+  (JNIEnv * env, jobject jobj)
+{
+	jobjectArray ret;
+	char portname_vid_pid[256] = " ";
+	DISPATCH_OBJ(wmiSvc);
+	DISPATCH_OBJ(colDevices);
+
+	dhInitialize(TRUE);
+	dhToggleExceptions(TRUE);
+
+	dhGetObject(L"winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2",
+	//dhGetObject(L"winmgmts:\\\\.\\root\\cimv2",
+	            NULL, &wmiSvc);
+	dhGetValue(L"%o", &colDevices, wmiSvc,
+	           L".ExecQuery(%S)",
+	           L"Select * from Win32_PnPEntity");
+
+	int port_count, vid, pid, i = 0;
+
+	struct sp_port **ports;
+	sp_list_ports(&ports);
+
+	// like ports.size()
+	for (i = 0; ports[i]; i++) {};
+	sp_free_port_list(ports);
+
+	ret = (jobjectArray)(*env)->NewObjectArray(env, i, (*env)->FindClass(env, "java/lang/String"), (*env)->NewStringUTF(env, ""));
+
+	FOR_EACH(objDevice, colDevices, NULL) {
+	    char* name = NULL;
+	    char* pnpid = NULL;
+	    char* match;
+
+	    dhGetValue(L"%s", &name,  objDevice, L".Name");
+	    dhGetValue(L"%s", &pnpid, objDevice, L".PnPDeviceID");
+
+	    if( name != NULL && ((match = strstr( name, "(COM" )) != NULL) ) { // look for "(COM23)"
+	        // 'Manufacturuer' can be null, so only get it if we need it
+	        char* comname = strtok( match, "()");
+	        sscanf(pnpid, "%*sVID_%4x%*s", vid);
+	        sscanf(pnpid, "%*sPID_%4x%*s", pid);
+	        snprintf(portname_vid_pid, sizeof(portname_vid_pid), "%s_%04X_%04X", comname, vid, pid);
+	        printf("%s - %s\n", portname_vid_pid, pnpid);
+	        (*env)->SetObjectArrayElement(env, ret, port_count, (*env)->NewStringUTF(env, portname_vid_pid));
+	        port_count++;
+	    }
+	    dhFreeString(name);
+	    dhFreeString(pnpid);
+
+	} NEXT(objDevice);
+
+	SAFE_RELEASE(colDevices);
+	SAFE_RELEASE(wmiSvc);
+
+	dhUninitialize(TRUE);
+
+	return ret;
+}
+
+#endif

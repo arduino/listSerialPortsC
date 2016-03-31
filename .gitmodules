@@ -1,3 +1,6 @@
 [submodule "libserialport"]
 	path = libserialport
 	url = https://github.com/facchinm/libserialport.git
+[submodule "usbSearch"]
+	path = usbSearch
+	url = https://github.com/todbot/usbSearch.git
