@@ -128,13 +128,21 @@ JNIEXPORT jobjectArray JNICALL Java_processing_app_Platform_listSerialsNative
 	        //sscanf(pnpid, "%*sVID_%4X", vid);
 	        //sscanf(pnpid, "%*sPID_%4X", pid);
 	        snprintf(portname_vid_pid, sizeof(portname_vid_pid), "%s_%04X_%04X", comname, vid, pid);
-	        (*env)->SetObjectArrayElement(env, ret, port_count, (*env)->NewStringUTF(env, portname_vid_pid));
+	        if (port_count < i) {
+	            // only store element if safe (operations are not atomic)
+	            (*env)->SetObjectArrayElement(env, ret, port_count, (*env)->NewStringUTF(env, portname_vid_pid));
+	        }
 	        port_count++;
 	    }
 	    dhFreeString(name);
 	    dhFreeString(pnpid);
 
 	} NEXT(objDevice);
+
+	for (; port_count < i; port_count++) {
+	    // fill the array with copies of the last good value (operations are not atomic)
+	    (*env)->SetObjectArrayElement(env, ret, port_count, (*env)->NewStringUTF(env, portname_vid_pid));
+	}
 
 	SAFE_RELEASE(colDevices);
 	SAFE_RELEASE(wmiSvc);
