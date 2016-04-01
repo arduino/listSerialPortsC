@@ -84,7 +84,7 @@ JNIEXPORT jobjectArray JNICALL Java_processing_app_Platform_listSerialsNative
 	DISPATCH_OBJ(colDevices);
 
 	dhInitialize(TRUE);
-	dhToggleExceptions(TRUE);
+	dhToggleExceptions(FALSE);
 
 	dhGetObject(L"winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2",
 	//dhGetObject(L"winmgmts:\\\\.\\root\\cimv2",
@@ -93,7 +93,10 @@ JNIEXPORT jobjectArray JNICALL Java_processing_app_Platform_listSerialsNative
 	           L".ExecQuery(%S)",
 	           L"Select * from Win32_PnPEntity");
 
-	int port_count, vid, pid, i = 0;
+	int port_count = 0;
+	int vid = 0;
+	int pid = 0;
+	int i = 0;
 
 	struct sp_port **ports;
 	sp_list_ports(&ports);
@@ -113,12 +116,18 @@ JNIEXPORT jobjectArray JNICALL Java_processing_app_Platform_listSerialsNative
 	    dhGetValue(L"%s", &pnpid, objDevice, L".PnPDeviceID");
 
 	    if( name != NULL && ((match = strstr( name, "(COM" )) != NULL) ) { // look for "(COM23)"
-	        // 'Manufacturuer' can be null, so only get it if we need it
 	        char* comname = strtok( match, "()");
-	        sscanf(pnpid, "%*sVID_%4x%*s", vid);
-	        sscanf(pnpid, "%*sPID_%4x%*s", pid);
+	        char id_s[5];
+	        char * pch;
+	        pch = strstr (pnpid,"VID_");
+	        strncpy(id_s, pch + 4, 4);
+	        vid = strtol(id_s, NULL, 16);
+	        pch = strstr (pnpid,"PID_");
+	        strncpy(id_s, pch + 4, 4);
+	        pid = strtol(id_s, NULL, 16);
+	        //sscanf(pnpid, "%*sVID_%4X", vid);
+	        //sscanf(pnpid, "%*sPID_%4X", pid);
 	        snprintf(portname_vid_pid, sizeof(portname_vid_pid), "%s_%04X_%04X", comname, vid, pid);
-	        printf("%s - %s\n", portname_vid_pid, pnpid);
 	        (*env)->SetObjectArrayElement(env, ret, port_count, (*env)->NewStringUTF(env, portname_vid_pid));
 	        port_count++;
 	    }

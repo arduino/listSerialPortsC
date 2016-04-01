@@ -3,4 +3,4 @@
 	url = https://github.com/facchinm/libserialport.git
 [submodule "usbSearch"]
 	path = usbSearch
-	url = https://github.com/todbot/usbSearch.git
+	url = https://github.com/arduino/usbSearch.git
