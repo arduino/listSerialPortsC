@@ -12,7 +12,9 @@ JNIEXPORT jstring JNICALL Java_processing_app_Platform_resolveDeviceAttachedToNa
 	const char *portname = (*env)->GetStringUTFChars(env, serial, NULL);
 	jstring result;
 
-	sp_get_port_by_name(portname, &port);
+	if (sp_get_port_by_name(portname, &port) != SP_OK) {
+		return (*env)->NewStringUTF(env, "");
+	}
 
 	int vid, pid;
 	if (sp_get_port_usb_vid_pid(port, &vid, &pid) == SP_OK) {
@@ -34,7 +36,9 @@ JNIEXPORT jobjectArray JNICALL Java_processing_app_Platform_listSerialsNative
 
 	char portname_vid_pid[256] = " ";
 
-	sp_list_ports(&ports);
+	if (sp_list_ports(&ports) != SP_OK) {
+		return (jobjectArray)(*env)->NewObjectArray(env, 0, (*env)->FindClass(env, "java/lang/String"), (*env)->NewStringUTF(env, ""));
+	}
 
 	// like ports.size()
 	for (i = 0; ports[i]; i++) {};

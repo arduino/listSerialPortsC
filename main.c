@@ -5,8 +5,12 @@ int main(void)
 {
     int i;
     struct sp_port **ports;
+    enum sp_return ret;
 
-    sp_list_ports(&ports);
+    ret = sp_list_ports(&ports);
+    if (ret != SP_OK) {
+        return 0;
+    }
 
     for (i = 0; ports[i]; i++) {
         int vid, pid;
