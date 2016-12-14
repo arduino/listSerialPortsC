@@ -18,7 +18,7 @@ JNIEXPORT jstring JNICALL Java_processing_app_Platform_resolveDeviceAttachedToNa
 
 	int vid, pid;
 	if (sp_get_port_usb_vid_pid(port, &vid, &pid) == SP_OK) {
-		snprintf(vid_pid_iserial, sizeof(vid_pid_iserial), "0x%04X_0x%04X_%s_%s", vid, pid, sp_get_port_usb_serial(port), sp_get_port_usb_product(port));
+		snprintf(vid_pid_iserial, sizeof(vid_pid_iserial), "0x%04X_0x%04X_%s_%s", vid, pid, sp_get_port_usb_serial(port), sp_get_port_description(port));
 	}
 
 	sp_free_port(port);

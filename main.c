@@ -20,7 +20,7 @@ int main(void)
 
         int vid, pid;
         if (sp_get_port_usb_vid_pid(port, &vid, &pid) == SP_OK) {
-            printf("%s | %04X:%04X | %s %s %s\n", sp_get_port_name(ports[i]), vid, pid, sp_get_port_usb_serial(port), sp_get_port_usb_product(port), sp_get_port_usb_manufacturer(port));
+            printf("%s | %04X:%04X | %s %s %s %s\n", sp_get_port_name(ports[i]), vid, pid, sp_get_port_usb_serial(port), sp_get_port_usb_product(port), sp_get_port_usb_manufacturer(port), sp_get_port_description(port));
         }
         sp_free_port(port);
     }
