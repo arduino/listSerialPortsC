@@ -37,3 +37,15 @@ arm-linux-gnueabihf-gcc main.c libserialport/linux_termios.c libserialport/linux
 cp listSerialC distrib/arm/listSerialC
 arm-linux-gnueabihf-gcc jnilib.c libserialport/linux_termios.c libserialport/linux.c libserialport/serialport.c -Ilibserialport/ -I$JAVA_INCLUDE_PATH -I$JAVA_INCLUDE_PATH/linux/ -shared -fPIC -o liblistSerialsj.so
 cp liblistSerialsj.so distrib/arm/
+
+mkdir -p distrib/aarch64
+cd libserialport
+./autogen.sh
+./configure --host=aarch64-linux-gnu
+make clean
+make
+cd ..
+aarch64-linux-gnu-gcc main.c libserialport/linux_termios.c libserialport/linux.c libserialport/serialport.c -Ilibserialport/  -o listSerialC
+cp listSerialC distrib/aarch64/listSerialC
+aarch64-linux-gnu-gcc jnilib.c libserialport/linux_termios.c libserialport/linux.c libserialport/serialport.c -Ilibserialport/ -I$JAVA_INCLUDE_PATH -I$JAVA_INCLUDE_PATH/linux/ -shared -fPIC -o liblistSerialsj.so
+cp liblistSerialsj.so distrib/aarch64/
