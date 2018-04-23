@@ -1,11 +1,11 @@
 #!/bin/bash -xe
 
 JAVA_INCLUDE_PATH=/usr/lib/jvm/java-8-openjdk-amd64/include/
-ARCH=i686-w64-mingw32
+ARCH=x86_64-w64-mingw32
 CC=$ARCH-gcc
 STRIP=$ARCH-strip
 
-mkdir -p distrib/$ARCH
+mkdir -p distrib/$ARCH/
 cd libserialport
 ./autogen.sh
 ./configure --host=$ARCH
