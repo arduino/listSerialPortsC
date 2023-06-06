@@ -49,3 +49,15 @@ aarch64-linux-gnu-gcc main.c libserialport/linux_termios.c libserialport/linux.c
 cp listSerialC distrib/aarch64/listSerialC
 aarch64-linux-gnu-gcc jnilib.c libserialport/linux_termios.c libserialport/linux.c libserialport/serialport.c -Ilibserialport/ -I$JAVA_INCLUDE_PATH -I$JAVA_INCLUDE_PATH/linux/ -shared -fPIC -o liblistSerialsj.so
 cp liblistSerialsj.so distrib/aarch64/
+
+mkdir -p distrib/riscv64
+cd libserialport
+./autogen.sh
+./configure --host=riscv64-linux-gnu
+make clean
+make
+cd ..
+riscv64-linux-gnu-gcc main.c libserialport/linux_termios.c libserialport/linux.c libserialport/serialport.c -Ilibserialport/  -o listSerialC
+cp listSerialC distrib/riscv64/listSerialC
+riscv64-linux-gnu-gcc jnilib.c libserialport/linux_termios.c libserialport/linux.c libserialport/serialport.c -Ilibserialport/ -I$JAVA_INCLUDE_PATH -I$JAVA_INCLUDE_PATH/linux/ -shared -fPIC -o liblistSerialsj.so
+cp liblistSerialsj.so distrib/riscv64/
